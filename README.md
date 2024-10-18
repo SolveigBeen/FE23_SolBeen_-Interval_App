@@ -1,1 +1,4 @@
-# FE23_SolBeen_-Interval_App
+# Timer app
+
+npm install easytimer.js
+npm install framer-motion

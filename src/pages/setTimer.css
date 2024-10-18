@@ -1,0 +1,28 @@
+.TimerSet-Container {
+  flex-grow: 1; /* Gör så att rubriken tar upp allt tillgängligt utrymme */
+  display: flex;
+flex-direction: column;
+  align-items: center; /* Centrera rubriken vertikalt */
+  justify-content: center;
+}
+
+.TimerSet {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  perspective: 1000px;
+
+}
+
+.time{
+  font-size: 64px; /* Justera storlek efter behov */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px; /* Kan justeras efter behov */
+  height: 100px;
+  
+ 
+}
+
