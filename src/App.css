@@ -41,6 +41,54 @@
   align-items: center;
 }
 
+.time {
+  font-size: 64px; /* Justera storlek efter behov */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px; /* Kan justeras efter behov */
+  height: 100px;
+
+}
+
+.stopTimerBtn {
+  margin-bottom: 1rem;
+  border: 2px solid var(--black);
+  border-radius: 5px;
+  width: 200px;
+  height: 50px; 
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible; /* Gör så att eventuella överflödande delar syns */
+  transition: transform 0.2s; /* Lägger till en mjuk övergång */
+  cursor: pointer; 
+ 
+}
+
+.TimerSet-Container {
+  flex-grow: 1; /* Gör så att rubriken tar upp allt tillgängligt utrymme */
+  display: flex;
+flex-direction: column;
+  align-items: center; /* Centrera rubriken vertikalt */
+  justify-content: center;
+}
 
 
+.TimerSet {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  perspective: 1000px;
+
+}
+
+
+.header-title {
+  font-size: 1.2em;
+  letter-spacing:0.2cap;
+  margin-top: 1rem;
+}
 

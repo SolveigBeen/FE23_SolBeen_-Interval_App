@@ -8,7 +8,9 @@ const Menu = () => {
 <Link to= '/Analog'>
 <h2>Analog timer</h2>
 </Link>
-<h2>Analog timer</h2>
+<Link to= '/Digital'>
+<h2>Digital timer</h2>
+</Link>
 <h2>Analog timer</h2>
 <h2>Analog timer</h2>
 <h2>Analog timer</h2>

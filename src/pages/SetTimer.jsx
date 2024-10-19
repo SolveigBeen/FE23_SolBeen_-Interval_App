@@ -3,6 +3,7 @@ import './setTimer.css';
 import Nav from '../components/nav';
 import { motion } from "framer-motion";
 import { TimerContext } from '../services/timer';
+import { Link } from 'react-router-dom';
 
 const SetTimer = () => {
 
@@ -48,8 +49,9 @@ const SetTimer = () => {
         </div>
         <p>minutes</p>
       </div>
-      <button onClick={() => startTimer(timerValue)}>Start Timer</button>
-     
+      <Link to= "/Analog" >
+      <button className='stopTimerBtn' onClick={() => startTimer(timerValue)}>Start Timer</button>
+      </Link>
     </div>
   );
 }

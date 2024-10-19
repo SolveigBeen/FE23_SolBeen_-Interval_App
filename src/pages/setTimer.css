@@ -14,15 +14,4 @@ flex-direction: column;
 
 }
 
-.time{
-  font-size: 64px; /* Justera storlek efter behov */
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100px; /* Kan justeras efter behov */
-  height: 100px;
-  
- 
-}
 

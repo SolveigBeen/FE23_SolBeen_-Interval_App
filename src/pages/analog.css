@@ -1,0 +1,68 @@
+.clock {
+  height: 20rem;
+  width: 20rem;
+
+  border-radius: 50%; /* Se till att klockan är rund */
+  position: relative;
+  margin: 0 auto; /* Centrera klockan på sidan */
+}
+
+.clock-center {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+ 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.second-mark {
+  height: 0.2rem;
+  width: 1rem;
+  background-color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0; /* Roterar från hörnet */
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: 3;
+}
+
+.segment {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform-origin: center center;
+  z-index: 1;
+}
+
+.second-segment {
+  width: 15rem;
+  height: 15rem;
+  position: relative;
+
+  transition: background 0.5s ease; /* Gör övergången mjuk när bakgrunden ändras */
+}
+
+.second-segment-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15rem; /* Samma som segmentets bredd */
+  height: 15rem; /* Samma som segmentets höjd */
+  border-radius: 50%; /* Gör den rund */
+  border: 2px solid grey; /* Tjocklek och färg för kanten */
+  clip-path: polygon(50% 50%, 100% 0, 100% 100%, 0 100%, 0 0); /* Justera polygonen för att matcha sekvensen */
+}
+
+
+
+.minute-segment {
+  width: 20rem;
+  height: 20rem;
+  transition: background 0.5s ease; /* Gör övergången mjuk när bakgrunden ändras */
+}
