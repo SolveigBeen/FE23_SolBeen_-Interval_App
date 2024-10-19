@@ -1,31 +1,37 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Nav from '../components/nav';
 import { TimerContext } from '../services/timer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 
 const DigitalView = () => {
-  const { abortTimer, displayTime } = useContext(TimerContext);
+  const { abortTimer, displayTime, alarmTriggered  } = useContext(TimerContext);
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    if  (alarmTriggered) {
+      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
+    }
+  }, [ alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
 
   return (
-    <div className="page-light ">
+    <div className=" page page-light ">
       <Nav></Nav>
-      <div className="header-title">interval</div>
-      <div className="TimerSet-Container">
-        <div className="TimerSet">
-          <div className='time'    >{displayTime}</div>
-        </div>
-        </div>
+      <div className="page-header">interval</div>
+      <div className="page-content-container">
+        <div className='page-time' >{displayTime}</div>
+      </div >
+      <div className='page-footer'>
         <Link to="/SetTimer" onClick={abortTimer}>
-        <motion.button
-          className='stopTimerBtn'
-          whileTap={{ scale: 0.5 }}
-          onHover={{ scale: 0.2 }}
-          transition={{duration:0.6}}
-        >
+          <motion.button
+            className='page-button button-small'
+            whileTap={{ scale: 0.5 }}
+            transition={{duration:0.6}}
+          >
           Abort Timer
-        </motion.button>
-      </Link>
+          </motion.button>
+        </Link>
+      </div>
     </div>
   )
 }

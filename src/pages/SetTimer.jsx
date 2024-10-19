@@ -1,16 +1,20 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext,useEffect} from 'react';
 import './setTimer.css';
 import Nav from '../components/nav';
 import { motion } from "framer-motion";
 import { TimerContext } from '../services/timer';
 import { Link } from 'react-router-dom';
 
+
 const SetTimer = () => {
 
   const [timerValue, setTimerValue] = useState(10);
   const [rotate, setRotate] = useState(0);
-  const { startTimer } = useContext(TimerContext); // Använd context här
+  const { startTimer,  resetTimer  } = useContext(TimerContext); // Använd context här
 
+  useEffect(() => {
+    resetTimer(); // Återställ timern när komponenten laddas
+  }, [resetTimer]);
 
   const increment = () => {
     setTimerValue(prevValue => prevValue + 1); // Ökar värdet med 1
@@ -24,10 +28,12 @@ const SetTimer = () => {
 
 
   return (
-    <div className="page-light">
+    <div className="page page-light">
+    
       <Nav></Nav>
-      <div className="TimerSet-Container">
-        <div className="TimerSet">
+      <div className="page-header"></div>
+      <div className="page-content-container">
+        <div className="flexRow">
           <motion.img 
             src='/decrement.svg' 
             alt="decrease"  
@@ -35,7 +41,7 @@ const SetTimer = () => {
             whileTap={{ scale: 0.7 }}  
           />
 
-          <motion.div className="time" 
+          <motion.div className="page-time" 
             initial={{ rotateY: 0 }} // Initial rotation
             animate={{ rotateY: rotate }} // Roterar 180 grader för ökning/minskning
             transition={{ duration: 0.5 }}
@@ -49,9 +55,11 @@ const SetTimer = () => {
         </div>
         <p>minutes</p>
       </div>
-      <Link to= "/Analog" >
-      <button className='stopTimerBtn' onClick={() => startTimer(timerValue)}>Start Timer</button>
-      </Link>
+      <div className="page-footer">
+        <Link to= "/Digital" >
+        <button className='button-large' onClick={() => startTimer(timerValue)}>Start Timer</button>
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Nav from '../components/nav';
 import { TimerContext } from '../services/timer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import './analog.css';
 
 const Analog = () => {
-  const { abortTimer, displayTime } = useContext(TimerContext);
+  const { abortTimer, displayTime, alarmTriggered  } = useContext(TimerContext);
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    if (alarmTriggered) {
+      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
+    }
+  }, [alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
+
 
   const secondMarks = [];
   for (let i = 0; i < 60; i++) {
@@ -25,13 +33,13 @@ const Analog = () => {
   // Funktion för att hämta sekunder från displayTime
   const getSecondsFromTime = (time) => {
     const parts = time.split(':');
-    return Number(parts[2]); // Hämta sekunder (3:e delen)
+    return Number(parts[1]); // Hämta sekunder (2:a delen)
   };
 
   // Funktion för att hämta minuter från displayTime
   const getMinutesFromTime = (time) => {
     const parts = time.split(':');
-    return Number(parts[1]); // Hämta minuter (2:a delen)
+    return Number(parts[0]); // Hämta minuter (1:a delen)
   };
 
   useEffect(() => {
@@ -63,32 +71,33 @@ const Analog = () => {
   }, [displayTime]);
 
   return (
-    <div className="page-light ">
+    <div className="page page-light ">
       <Nav></Nav>
-      <div className="header-title">interval</div>
-      <div className="TimerSet-Container">
-        <div className="TimerSet">
+      <div className="page-header">interval</div>
+      <div className="page-content-container">
+       
           <div className="clock">
             {secondMarks}
             <div className="segment minute-segment"
               style={{
-                background: `conic-gradient(red 0deg ${minuteAngle}deg, transparent ${minuteAngle}deg 360deg)`, transform: `translate(-50%, -50%) `,
+                background: `conic-gradient(#f93434c0 0deg ${minuteAngle}deg, transparent ${minuteAngle}deg 360deg)`, transform: `translate(-50%, -50%) `,
               }}
             />
 
             <div className="segment second-segment"
-              style={{background: `conic-gradient(yellow 0deg ${secondAngle}deg, transparent ${secondAngle}deg 360deg)`,
+              style={{background: `conic-gradient(#f93434a0 0deg ${secondAngle}deg, transparent ${secondAngle}deg 360deg)`,
               transform: `translate(-50%, -50%)`, 
             }}
             />
             
             <div className="clock-center"></div>
           </div>
-        </div>
+        
       </div>
+      <div className="page-footer">
       <Link to="/SetTimer" onClick={abortTimer}>
         <motion.button
-          className='stopTimerBtn'
+          className='page-button button-small'
           whileTap={{ scale: 0.5 }}
         
           transition={{ duration: 0.6 }}
@@ -96,6 +105,7 @@ const Analog = () => {
           Abort Timer
         </motion.button>
       </Link>
+    </div>
     </div>
   );
 }

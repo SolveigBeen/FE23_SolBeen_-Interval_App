@@ -9,9 +9,8 @@ function App() {
   return (
     <>
 <TimerProvider>
+  
       <RouterProvider router={router} />
-      
-    
     </TimerProvider>
   </>
   )
