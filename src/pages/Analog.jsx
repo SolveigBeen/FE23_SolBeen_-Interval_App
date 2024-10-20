@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Nav from '../components/nav';
 import { TimerContext } from '../services/timer';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import './analog.css';
 
 const Analog = () => {
-  const { abortTimer, displayTime, alarmTriggered  } = useContext(TimerContext);
-  const navigate = useNavigate(); 
+  const { displayTime, alarmTriggered } = useContext(TimerContext);
+  const navigate = useNavigate();
+  const [isZoomingOut, setIsZoomingOut] = useState(false); // För zoom/fade-out animation 
 
   useEffect(() => {
     if (alarmTriggered) {
@@ -15,6 +16,14 @@ const Analog = () => {
     }
   }, [alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
 
+  const handleClick = () => {
+    setIsZoomingOut(true); // Starta zoom-out animationen
+
+    // Omdirigera efter animationen
+    setTimeout(() => {
+      navigate("/SetTimer"); // Omdirigering efter animationen
+    }, 300); // 300ms väntetid för animationen
+  };
 
   const secondMarks = [];
   for (let i = 0; i < 60; i++) {
@@ -72,42 +81,43 @@ const Analog = () => {
 
   return (
     <div className="page page-light ">
-      <Nav></Nav>
+      <Nav />
       <div className="page-header">interval</div>
       <div className="page-content-container">
-       
-          <div className="clock">
-            {secondMarks}
-            <div className="segment minute-segment"
-              style={{
-                background: `conic-gradient(#f93434c0 0deg ${minuteAngle}deg, transparent ${minuteAngle}deg 360deg)`, transform: `translate(-50%, -50%) `,
-              }}
-            />
-
-            <div className="segment second-segment"
-              style={{background: `conic-gradient(#f93434a0 0deg ${secondAngle}deg, transparent ${secondAngle}deg 360deg)`,
-              transform: `translate(-50%, -50%)`, 
+        <motion.div className="clock"
+          initial={{ scale: 1, opacity: 1 }} // Startläge
+          animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}} // Zoom-out och fade-out vid klick
+          transition={{ duration: 0.3 }} // Ändrad längd på animationen till 300ms
+        >
+          {secondMarks}
+          <div className="segment minute-segment"
+            style={{
+              background: `conic-gradient(#f93434c0 0deg ${minuteAngle}deg, transparent ${minuteAngle}deg 360deg)`,
+              transform: `translate(-50%, -50%)`,
             }}
-            />
-            
-            <div className="clock-center"></div>
-          </div>
-        
+          />
+          <div className="segment second-segment"
+            style={{
+              background: `conic-gradient(#f93434a0 0deg ${secondAngle}deg, transparent ${secondAngle}deg 360deg)`,
+              transform: `translate(-50%, -50%)`,
+            }}
+          />
+          <div className="clock-center"></div>
+        </motion.div>
       </div>
       <div className="page-footer">
-      <Link to="/SetTimer" onClick={abortTimer}>
         <motion.button
           className='page-button button-small'
-          whileTap={{ scale: 0.5 }}
-        
-          transition={{ duration: 0.6 }}
+          onClick={handleClick}
+          whileTap={{ scale: 0.9, backgroundColor: 'var(--ash)' }} // Ändrar bakgrundsfärg till --ash vid klick
+          transition={{ duration: 0.2 }} // Snabb övergång för bakgrundsfärg
         >
           Abort Timer
         </motion.button>
-      </Link>
-    </div>
+      </div>
     </div>
   );
 }
 
 export default Analog;
+

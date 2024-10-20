@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import Meny from '../components/Meny';
 
 const Nav = () => {

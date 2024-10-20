@@ -11,6 +11,19 @@
   font-family: PT Sans, sans-serif;
 }
 
+body {
+  margin: 0; /* Ta bort marginaler */
+  height: 100vh; /* Sätt höjd till 100% av viewporten */
+  background-color:#EEEEEE; /* Eller en annan mörk färg */
+}
+
+button {
+  background: none; /* Ingen bakgrundsfärg */
+  border: none; /* Ingen ram */
+  padding: 0; /* Ingen padding */
+  margin: 0; /* Ingen marginal */
+  color: inherit; /* Ärva färg från föräldern */
+}
 
 h1 {
   font-size: 3.2em;
@@ -27,4 +40,8 @@ a {
 }
 
 
+button:hover {
+  background-color: none;
+ 
+}
 

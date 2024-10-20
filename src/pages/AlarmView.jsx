@@ -1,13 +1,27 @@
-import React, { useContext } from 'react'; 
-import { TimerContext } from '../services/timer';
+import React, { useState } from 'react'; 
+
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 const AlarmView = () => {
-  const { abortTimer } = useContext(TimerContext);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    setIsAnimating(true); // Starta animationen
+
+    setTimeout(() => {
+      navigate("/SetTimer"); // Navigera efter animationen
+    }, 1000); // Tiden för animationen (matchar med duration)
+  };
+
 
   return (
-    <div className=" page page-black">
+    <motion.div className=" page page-black"
+    initial={{ x: 0 }} // Startläge
+      animate={isAnimating ? { x: '-100vw' } : {}} // Glid ut åt höger när isAnimating är true
+      transition={{ duration: 1 }} // Längd på animationen
+    >
        <div className="page-header"></div>
        <div className="page-content-container">
       <motion.div className=" alarm"
@@ -26,17 +40,18 @@ const AlarmView = () => {
     <h2 > Times up! </h2>
     </div>
     <div className="page-footer">
-    <Link to="/SetTimer"  onClick={abortTimer}>
+    
         <motion.button
           className='page-button button-dark'
           whileTap={{ scale: 0.5 }}
           transition={{ duration: 0.6 }}
+          onClick={handleClick}
         >
           Abort Timer
         </motion.button>
-      </Link>
+    
   </div>
-  </div>
+  </motion.div>
   )
 }
 
