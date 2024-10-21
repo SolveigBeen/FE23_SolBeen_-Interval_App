@@ -7,12 +7,12 @@ import Checkbox from '../components/Checkbox';
 
 const SetTimer = () => {
   const [timerValue, setTimerValue] = useState(10);
-  const [rotate, setRotate] = useState(0);  
+  const [rotate, setRotate] = useState(0);
   const [isZoomingOut, setIsZoomingOut] = useState(false);
-  const { startTimer, resetTimer, lastView } = useContext(TimerContext); // Add lastView here
+
+const { startTimer, resetTimer, lastView, setIsCheckboxTicked, isCheckboxTicked } = useContext(TimerContext);
   const navigate = useNavigate();
 
-  // Remove resetTimer from useEffect to avoid resetting every time component mounts
   const increment = () => {
     setTimerValue((prevValue) => prevValue + 1);
     setRotate((prevRotate) => prevRotate + 180);
@@ -23,15 +23,12 @@ const SetTimer = () => {
     setRotate((prevRotate) => prevRotate - 180);
   };
 
-  const handleCheckboxPause = (isChecked) => {
-    if (isChecked) {
-      // Pause logic if needed; ensure it doesn't block timer start
-      // You might need to handle state to avoid blocking start
-    }
+  const handleCheckboxInterval = (isChecked) => {
+    setIsCheckboxTicked(isChecked); // Spara checkbox-status
   };
 
   const handleClick = () => {
-    startTimer(timerValue, navigate, lastView); // Make sure lastView is now defined
+    startTimer(timerValue, navigate, lastView);
     setIsZoomingOut(true);
 
     setTimeout(() => {
@@ -43,7 +40,7 @@ const SetTimer = () => {
     <motion.div className="page page-light">
       <Nav />
       <div className="page-header"></div>
-      
+
       <motion.div
         className="page-content-container"
         initial={{ scale: 1, opacity: 1 }}
@@ -81,7 +78,8 @@ const SetTimer = () => {
           <p>minutes</p>
         </div>
         <div className="page-Space">
-          <Checkbox onPauseChange={handleCheckboxPause} /> {/* Skickar funktionen som props */}
+          <Checkbox label="Interval" isChecked={isCheckboxTicked} onChange={handleCheckboxInterval} />
+          <Checkbox label="1 min break / interval" isChecked={false} onChange={() => {}} />
         </div>
       </motion.div>
 
@@ -99,4 +97,5 @@ const SetTimer = () => {
 };
 
 export default SetTimer;
+
 

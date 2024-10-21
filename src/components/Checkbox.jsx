@@ -1,25 +1,22 @@
-import React, { useContext } from 'react';
-import { TimerContext } from '../services/timer';
+import React from 'react';
+import { motion } from 'framer-motion';
 import './checkbox.css';
 
-const Checkbox = () => {
-  const { setIsCheckboxTicked, isCheckboxTicked } = useContext(TimerContext);
-
-  const handleCheckboxChange = () => {
-    setIsCheckboxTicked(!isCheckboxTicked);
-  };
-
+const Checkbox = ({ label, checked, onChange }) => {
   return (
     <div className="checkbox-container">
       <input
         type="checkbox"
         className="checkBox"
-        checked={isCheckboxTicked}
-        onChange={handleCheckboxChange}
+        checked={checked}
+        onChange={onChange}
       />
-      <label>1 min break / interval</label>
+      <label>
+        {label}
+      </label>
     </div>
   );
-}
+};
 
 export default Checkbox;
+

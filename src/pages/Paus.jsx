@@ -4,7 +4,7 @@ import { TimerContext } from '../services/timer';
 import { motion } from "framer-motion";
 
 const Paus = () => {
-  const { resumeTimer, setIsCheckboxTicked, pauseCountdown, lastView } = useContext(TimerContext);
+  const { resumeTimer, setIsCheckboxTicked, lastView } = useContext(TimerContext);
   const navigate = useNavigate(); // Skapa en instans av navigate
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -13,7 +13,7 @@ const Paus = () => {
 
     // När användaren klickar på "No Pause", stoppa pausläget och återuppta huvudtimern
     setTimeout(() => {
-      setIsCheckboxTicked(false); // Sluta med pausintervallerna
+     
       resumeTimer(); // Återuppta huvudtimern
       navigate(lastView); // Navigera tillbaka till föregående vy
       console.log("No pause clicked, pause intervals stopped.");
@@ -21,18 +21,17 @@ const Paus = () => {
   };
 
   return (
-    <motion.div className=" page page-black"
-    initial={{ x: 0 }} // Startläge
+    <motion.div className="page page-black"
+      initial={{ x: 0 }} // Startläge
       animate={isAnimating ? { x: '-100vw' } : {}} // Glid ut åt höger när isAnimating är true
       transition={{ duration: 1 }} 
-      >
+    >
       <div className="page-header"></div>
       <div className="page-content-container">
         <div className="page-space"></div>
         <div>
           <img src="/Paus.svg" alt="Beskrivning av bilden" />
           <h2>Pause & Breath</h2>
-          <div>{pauseCountdown}</div>
         </div>
         <div className="page-space"></div>
       </div>
@@ -50,6 +49,8 @@ const Paus = () => {
 };
 
 export default Paus;
+
+
 
 
 

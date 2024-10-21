@@ -6,6 +6,7 @@ import {  useNavigate } from 'react-router-dom';
 
 const DigitalView = () => {
   const { displayTime , alarmTriggered} = useContext(TimerContext);
+  
   const [isZoomingOut, setIsZoomingOut] = useState(false);
   const navigate = useNavigate();
 
