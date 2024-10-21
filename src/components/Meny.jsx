@@ -31,7 +31,11 @@ const Meny = ({ isOpen, onClose }) => {
            transition={{ duration: 0.2 }}>Digital Timer</motion.h2>
         </Link>
         <h2 className="menu-links">Visual timer</h2>
-        <h2 className="menu-links">text timer</h2>
+        <Link to="/Text" onClick={onClose}>
+          <motion.h2 className="menu-links"
+           whileHover={{ scale: 1.2 }} 
+           transition={{ duration: 0.2 }}>Text Timer</motion.h2>
+        </Link>
         <h2 className="menu-links">circles timer</h2>
       </motion.div>
     </motion.div>

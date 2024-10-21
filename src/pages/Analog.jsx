@@ -84,6 +84,7 @@ const Analog = () => {
       <Nav />
       <div className="page-header">interval</div>
       <div className="page-content-container">
+      <div className="page-space"></div>
         <motion.div className="clock"
           initial={{ scale: 1, opacity: 1 }} // Startläge
           animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}} // Zoom-out och fade-out vid klick
@@ -104,6 +105,7 @@ const Analog = () => {
           />
           <div className="clock-center"></div>
         </motion.div>
+        <div className="page-space"></div>
       </div>
       <div className="page-footer">
         <motion.button
