@@ -45,7 +45,7 @@ const AlarmView = () => {
     
           <motion.button
             className='page-button button-dark'
-            whileTap={{ scale: 0.5 }}
+            whileTap={{ scale: 0.8 }}
             transition={{ duration: 0.6 }}
             onClick={handleClick}
           >

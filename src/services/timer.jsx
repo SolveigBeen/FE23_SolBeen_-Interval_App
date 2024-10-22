@@ -9,6 +9,8 @@ export const TimerProvider = ({ children }) => {
   const [lastView, setLastView] = useState('/Analog');
   const [alarmTriggered, setAlarmTriggered] = useState(false);
   const [isCheckboxTicked, setIsCheckboxTicked] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+ 
 
   const formatTime = (minutes, seconds) => {
     const formattedMinutes = String(minutes).padStart(2, '0');
@@ -22,42 +24,92 @@ export const TimerProvider = ({ children }) => {
     }
     setAlarmTriggered(false);
 
-    const totalSeconds = timerValue * 60;
+    const calculatedTotalSeconds = timerValue * 60;
+    
 
-    timer.start({
-      countdown: true,
-      startValues: { seconds: totalSeconds },
+      // Rensa tidigare event-lyssnare för att undvika duplicering
+    timer.removeEventListener('secondsUpdated');
+    timer.removeEventListener('targetAchieved');
 
-    });
+    // Kontrollera om checkboxen är markerad eller inte
+    if (isCheckboxTicked) {
+      // När checkboxen är markerad, sätt ett mål för 10 sekunder mindre
+      timer.start({
+        countdown: true,
+        startValues: { seconds: calculatedTotalSeconds },
+        target: { seconds: calculatedTotalSeconds - 5 }
+      });
 
-    timer.addEventListener('secondsUpdated', () => {
-      const timeValues = timer.getTimeValues();
-      setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
-    });
+      timer.addEventListener('secondsUpdated', () => {
+        const timeValues = timer.getTimeValues();
+        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
+      });
 
-    timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
+      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
+    } else {
+      // När checkboxen inte är markerad, kör timern utan mål
+      timer.start({
+        countdown: true,
+        startValues: { seconds: calculatedTotalSeconds }
+      });
+
+      timer.addEventListener('secondsUpdated', () => {
+        const timeValues = timer.getTimeValues();
+        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
+      });
+
+      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
+    }
   };
 
   const handleTargetAchieved = (navigate) => () => {
     if (isCheckboxTicked) {
-      timer.pause(); // Pausa timern
+      // Pausar timern när checkboxen är markerad och 10 sekunder har gått
+      timer.pause();
       console.log("Timer paused after 10 seconds");
       navigate('/Paus'); // Navigera till pausvy
+      setIsPaused(true);
     } else {
-      console.log("Timer continues running without pause.");
+      // Navigera till Alarm när checkboxen inte är markerad
+      console.log("Timer reached the target, navigating to Alarm.");
+      navigate('/Alarm');
+    }
+  };
+
+  const resumeTimer = (navigate) => {
+    if (isPaused) {
       const currentTime = timer.getTimeValues().totalSeconds; // Hämta nuvarande tid i sekunder
+      const newTargetTime = currentTime - 5; // Ställ in en ny paus om 5 sekunder
+  
+      // Rensa event-lyssnare för att undvika duplicering
+      timer.removeEventListener('secondsUpdated');
+      timer.removeEventListener('targetAchieved');
+  
+      // Återuppta timern och sätt en ny target för 5 sekunder
       timer.start({
         countdown: true,
         startValues: { seconds: currentTime },
-        target: { seconds: currentTime - 10 }
+        target: { seconds: newTargetTime }
       });
+  
+      setIsPaused(false);
+  
+      // Lägg tillbaka event listeners efter att timern har startats om
+      timer.addEventListener('secondsUpdated', () => {
+        const timeValues = timer.getTimeValues();
+        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
+      });
+  
+      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
     }
   };
+  
 
   const resetTimer = () => {
     timer.stop();
     setDisplayTime('00:00');
     setAlarmTriggered(false);
+    setIsPaused(false);
   };
 
   return (
@@ -70,11 +122,13 @@ export const TimerProvider = ({ children }) => {
       alarmTriggered,
       setIsCheckboxTicked,
       isCheckboxTicked,
+      resumeTimer
     }}>
       {children}
     </TimerContext.Provider>
   );
 };
+
 
 
 

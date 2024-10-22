@@ -38,7 +38,7 @@ const { startTimer, resetTimer, lastView, setIsCheckboxTicked, isCheckboxTicked 
 
   return (
     <motion.div className="page page-light">
-      <Nav />
+     
       <div className="page-header"></div>
 
       <motion.div
