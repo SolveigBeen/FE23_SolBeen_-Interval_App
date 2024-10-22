@@ -1,137 +1,56 @@
-import React, { createContext, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Timer } from 'easytimer.js';
 
-export const TimerContext = createContext();
+// Skapa en global timer-instans
+const timer = new Timer(); 
 
-export const TimerProvider = ({ children }) => {
-  const [timer] = useState(new Timer());
-  const [displayTime, setDisplayTime] = useState('00:00');
-  const [lastView, setLastView] = useState('/Analog');
-  const [alarmTriggered, setAlarmTriggered] = useState(false);
-  const [isCheckboxTicked, setIsCheckboxTicked] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
- 
+const useTimerValue = () => { 
+  const [timerValue, setTimerValue] = useState('00:00'); // Initiera med 0-tid
 
-  const formatTime = (minutes, seconds) => {
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
+  useEffect(() => {
+    const updateTimerValue = () => {
+      setTimerValue(timer.getTimeValues().toString(['minutes', 'seconds']));
+    };
 
-  const startTimer = (timerValue, navigate) => {
-    if (timer.isRunning()) {
-      timer.stop();
-    }
-    setAlarmTriggered(false);
-
-    const calculatedTotalSeconds = timerValue * 60;
+    timer.addEventListener('secondsUpdated', updateTimerValue);
     
+    // Ta bort eventlyssnaren när komponenten avmonteras
+    return () => {
+      timer.removeEventListener('secondsUpdated', updateTimerValue);
+    };
+  }, []); // Tom array så att effekten bara körs en gång vid montering
 
-      // Rensa tidigare event-lyssnare för att undvika duplicering
-    timer.removeEventListener('secondsUpdated');
-    timer.removeEventListener('targetAchieved');
+  return timerValue; // Returnera timer-värdet
+};
 
-    // Kontrollera om checkboxen är markerad eller inte
-    if (isCheckboxTicked) {
-      // När checkboxen är markerad, sätt ett mål för 10 sekunder mindre
-      timer.start({
-        countdown: true,
-        startValues: { seconds: calculatedTotalSeconds },
-        target: { seconds: calculatedTotalSeconds - 5 }
-      });
+const stopTimer = () => {
+  timer.stop();
+};
 
-      timer.addEventListener('secondsUpdated', () => {
-        const timeValues = timer.getTimeValues();
-        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
-      });
+const pausTimer = () => {
+  timer.pause();
+};
 
-      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
-    } else {
-      // När checkboxen inte är markerad, kör timern utan mål
-      timer.start({
-        countdown: true,
-        startValues: { seconds: calculatedTotalSeconds }
-      });
+const startTimer = (startValue, navigate) => {
+  timer.stop();
+  timer.start({ countdown: true, startValues: { seconds: startValue * 60 } });
+  console.log(startValue);
+  // Ta bort tidigare lyssnare för targetAchieved om de finns
+  timer.removeEventListener('targetAchieved');
 
-      timer.addEventListener('secondsUpdated', () => {
-        const timeValues = timer.getTimeValues();
-        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
-      });
-
-      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
-    }
-  };
-
-  const handleTargetAchieved = (navigate) => () => {
-    if (isCheckboxTicked) {
-      // Pausar timern när checkboxen är markerad och 10 sekunder har gått
-      timer.pause();
-      console.log("Timer paused after 10 seconds");
-      navigate('/Paus'); // Navigera till pausvy
-      setIsPaused(true);
-    } else {
-      // Navigera till Alarm när checkboxen inte är markerad
-      console.log("Timer reached the target, navigating to Alarm.");
-      navigate('/Alarm');
-    }
-  };
-
-  const resumeTimer = (navigate) => {
-    if (isPaused) {
-      const currentTime = timer.getTimeValues().totalSeconds; // Hämta nuvarande tid i sekunder
-      const newTargetTime = currentTime - 5; // Ställ in en ny paus om 5 sekunder
-  
-      // Rensa event-lyssnare för att undvika duplicering
-      timer.removeEventListener('secondsUpdated');
-      timer.removeEventListener('targetAchieved');
-  
-      // Återuppta timern och sätt en ny target för 5 sekunder
-      timer.start({
-        countdown: true,
-        startValues: { seconds: currentTime },
-        target: { seconds: newTargetTime }
-      });
-  
-      setIsPaused(false);
-  
-      // Lägg tillbaka event listeners efter att timern har startats om
-      timer.addEventListener('secondsUpdated', () => {
-        const timeValues = timer.getTimeValues();
-        setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
-      });
-  
-      timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
-    }
-  };
-  
-
-  const resetTimer = () => {
-    timer.stop();
-    setDisplayTime('00:00');
-    setAlarmTriggered(false);
-    setIsPaused(false);
-  };
-
-  return (
-    <TimerContext.Provider value={{
-      startTimer,
-      displayTime,
-      resetTimer,
-      setLastView,
-      lastView,
-      alarmTriggered,
-      setIsCheckboxTicked,
-      isCheckboxTicked,
-      resumeTimer
-    }}>
-      {children}
-    </TimerContext.Provider>
-  );
+  // Lägg till ny lyssnare för när timern når noll
+  timer.addEventListener('targetAchieved', () => {
+    console.log("Timer reached the target, navigating to Alarm.");
+    navigate('/Alarm');
+  });
 };
 
 
 
+// Funktion som returnerar minuter från timern
+const timerMinute = () => {
+  return timer.getTimeValues().minutes; // Returnera minutvärdet
+};
 
-
-
+export { useTimerValue, timerMinute, stopTimer, pausTimer, startTimer };
 

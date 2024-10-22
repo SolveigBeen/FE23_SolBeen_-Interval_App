@@ -1,16 +1,20 @@
-import React, {  useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Nav from '../components/nav';
-import { useTimerValue } from '../services/timer';
+import { TimerContext } from '../services/timer';
 import { motion } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 
 const TextView = () => {
-
-  const timerValue = useTimerValue(); 
+  const { displayTime, alarmTriggered } = useContext(TimerContext);
   const [isZoomingOut, setIsZoomingOut] = useState(false);
   const [animateKey, setAnimateKey] = useState(0); // State för att trigga animation
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (alarmTriggered) {
+      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
+    }
+  }, [alarmTriggered, navigate]);
 
   const handleClick = () => {
     setIsZoomingOut(true);
@@ -38,7 +42,7 @@ const TextView = () => {
     return { minutes, seconds }; // Returnera både minuter och sekunder som ett objekt
   };
 
-  const { minutes, seconds } = formatTimeAsText(timerValue);
+  const { minutes, seconds } = formatTimeAsText(displayTime);
 
   const minuteText = minutes === 1 ? "en" : `${numberToText(minutes)}`;
   const secondText = seconds === 1 ? "en" : `${numberToText(seconds)}`;

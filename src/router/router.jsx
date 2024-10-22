@@ -7,23 +7,27 @@ import Analog from '../pages/Analog'
 import DigitalView from '../pages/DigitalView'
 import TextView from '../pages/TextView';
 import AlarmView from '../pages/AlarmView';
-import Paus from '../pages/Paus';
+//import Paus from '../pages/Paus';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Loading />,
   },
+  
+
   {
     path: "/SetTimer",
     element: <SetTimer />,
   },
- 
+
 
   {
     path: "/Analog",
     element: <Analog />,
   },
+
+ 
   {
     path: "/Digital",
     element: <DigitalView />,
@@ -38,12 +42,12 @@ const router = createBrowserRouter([
     path: "/Alarm",
     element: <AlarmView />,
   },
-
+/*
   {
     path: "/Paus",
     element: <Paus />,
   },
- 
+ */
 ]);
 
 export default router

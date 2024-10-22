@@ -1,19 +1,28 @@
-import React, {  useState, useEffect, } from 'react';
+import React, { useContext, useState, useEffect, } from 'react';
 import Nav from '../components/nav';
-import { useTimerValue } from '../services/timer';
+import { TimerContext } from '../services/timer';
 import { motion } from "framer-motion";
 import {  useNavigate } from 'react-router-dom';
 
 const DigitalView = () => {
-
-  const timerValue = useTimerValue(); 
+  const { displayTime , alarmTriggered} = useContext(TimerContext);
+  
   const [isZoomingOut, setIsZoomingOut] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (alarmTriggered) {
+      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
+    }
+  }, [alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
+
+
 
   const handleClick = () => {
     setIsZoomingOut(true);
     setTimeout(() => {
       navigate("/SetTimer"); 
+      stopTimer();// This should be a defined route
     }, 300);
 };
 
@@ -29,7 +38,7 @@ const DigitalView = () => {
           animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}}
           transition={{ duration: 0.3 }}
         >
-          {timerValue}
+          {displayTime}
         </motion.div>
         <div className="page-space"></div>
       </div>
@@ -48,5 +57,3 @@ const DigitalView = () => {
 }
 
 export default DigitalView;
-
-

@@ -102,7 +102,7 @@ export const TimerProvider = ({ children }) => {
       // Lägg tillbaka event listeners efter att timern har startats om
       timer.addEventListener('secondsUpdated', () => {
         const { minutes, seconds } = getTimeValues();
-        setDisplayTime(formatTime(minutes, seconds));
+    setDisplayTime(formatTime(minutes, seconds));
       });
   
       timer.addEventListener('targetAchieved', handleTargetAchieved(navigate));
@@ -133,8 +133,4 @@ export const TimerProvider = ({ children }) => {
     </TimerContext.Provider>
   );
 };
-
-
-
-
 
