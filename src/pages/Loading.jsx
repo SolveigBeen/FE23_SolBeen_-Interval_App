@@ -23,7 +23,8 @@ const Loading = () => {
     >
       <div className="page-header"></div>
       <div className="page-content-container">
-       
+      <div className="page-space"></div>
+      <div>
       <motion.img
           src="/Frame1.svg"
           alt="Beskrivning av bilden"
@@ -34,6 +35,9 @@ const Loading = () => {
         
         <h3>INTERVAL</h3>
         <p>For all your timing needs</p>
+        </div>
+      <div className="page-space"></div>
+        
       </div>
     </motion.div>
   )

@@ -1,28 +1,50 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Nav from '../components/nav';
-import { TimerContext } from '../services/timer';
-import {  useNavigate } from 'react-router-dom';
+import { useTimerValue } from '../services/timer';
+import { useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import './analog.css';
 
 const Analog = () => {
-  const { displayTime, alarmTriggered } = useContext(TimerContext);
+  const timerValue = useTimerValue(); 
   const navigate = useNavigate();
-  const [isZoomingOut, setIsZoomingOut] = useState(false); // För zoom/fade-out animation 
+  const [isZoomingOut, setIsZoomingOut] = useState(false);
+
+  // Initial angles for second and minute hands
+  const [secondAngle, setSecondAngle] = useState(360);
+  const [minuteAngle, setMinuteAngle] = useState(360);
+
+  // Function to get seconds from timer value
+  const getSecondsFromTime = (time) => {
+    const parts = time.split(':');
+    return Number(parts[1]);
+  };
+
+  // Function to get minutes from timer value
+  const getMinutesFromTime = (time) => {
+    const parts = time.split(':');
+    return Number(parts[0]);
+  };
 
   useEffect(() => {
-    if (alarmTriggered) {
-      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
-    }
-  }, [alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
+    const totalSeconds = getSecondsFromTime(timerValue);
+    const totalMinutes = getMinutesFromTime(timerValue);
+
+    // Calculate angles based on timer values
+    const newSecondAngle = (totalSeconds / 60) * 360;
+    const newMinuteAngle = (totalMinutes / 60) * 360;
+
+    setSecondAngle(newSecondAngle);
+    setMinuteAngle(newMinuteAngle);
+    
+  }, [timerValue]); // Run this effect whenever timerValue changes
 
   const handleClick = () => {
-    setIsZoomingOut(true); // Starta zoom-out animationen
+    setIsZoomingOut(true);
 
-    // Omdirigera efter animationen
     setTimeout(() => {
-      navigate("/SetTimer"); // Omdirigering efter animationen
-    }, 300); // 300ms väntetid för animationen
+      navigate("/SetTimer");
+    }, 300);
   };
 
   const secondMarks = [];
@@ -36,67 +58,28 @@ const Analog = () => {
     );
   }
 
-  const [secondAngle, setSecondAngle] = useState(360); // Vinkel för sekunder
-  const [minuteAngle, setMinuteAngle] = useState(360); // Vinkel för minuter
-
-  // Funktion för att hämta sekunder från displayTime
-  const getSecondsFromTime = (time) => {
-    const parts = time.split(':');
-    return Number(parts[1]); // Hämta sekunder (2:a delen)
-  };
-
-  // Funktion för att hämta minuter från displayTime
-  const getMinutesFromTime = (time) => {
-    const parts = time.split(':');
-    return Number(parts[0]); // Hämta minuter (1:a delen)
-  };
-
-  useEffect(() => {
-    const totalSeconds = getSecondsFromTime(displayTime);
-    const totalMinutes = getMinutesFromTime(displayTime);
-
-    // Beräkna initiala vinklar
-    const initialSecondAngle = (totalSeconds / 60) * 360; // Vinkel för sekunder
-    const initialMinuteAngle = (totalMinutes / 60) * 360; // Vinkel för minuter
-
-    setSecondAngle(initialSecondAngle);
-    setMinuteAngle(initialMinuteAngle);
-
-    const interval = setInterval(() => {
-      setSecondAngle((prevAngle) => {
-        const newAngle = prevAngle - 6; // Minskar 6 grader per sekund
-        if (newAngle < 0) {
-          setMinuteAngle((prevMinuteAngle) => {
-            const updatedMinuteAngle = prevMinuteAngle - 6; // Minska minutvinkeln
-            return updatedMinuteAngle >= 0 ? updatedMinuteAngle : 0; // Se till att vinkeln inte går under 0
-          });
-          return 360; // Återställ sekundvinkeln när den når 0
-        }
-        return newAngle;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval); // Rensa intervallet vid unmount
-  }, [displayTime]);
-
   return (
-    <div className="page page-light ">
+    <div className="page page-light">
       <Nav />
       <div className="page-header">interval</div>
       <div className="page-content-container">
-        <motion.div className="clock"
-          initial={{ scale: 1, opacity: 1 }} // Startläge
-          animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}} // Zoom-out och fade-out vid klick
-          transition={{ duration: 0.3 }} // Ändrad längd på animationen till 300ms
+        <div className="page-space"></div>
+        <motion.div
+          className="clock"
+          initial={{ scale: 1, opacity: 1 }}
+          animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}}
+          transition={{ duration: 0.3 }}
         >
           {secondMarks}
-          <div className="segment minute-segment"
+          <div
+            className="segment minute-segment"
             style={{
               background: `conic-gradient(#f93434c0 0deg ${minuteAngle}deg, transparent ${minuteAngle}deg 360deg)`,
               transform: `translate(-50%, -50%)`,
             }}
           />
-          <div className="segment second-segment"
+          <div
+            className="segment second-segment"
             style={{
               background: `conic-gradient(#f93434a0 0deg ${secondAngle}deg, transparent ${secondAngle}deg 360deg)`,
               transform: `translate(-50%, -50%)`,
@@ -104,20 +87,22 @@ const Analog = () => {
           />
           <div className="clock-center"></div>
         </motion.div>
+        <div className="page-space"></div>
       </div>
       <div className="page-footer">
         <motion.button
-          className='page-button button-small'
+          className="page-button button-small"
           onClick={handleClick}
-          whileTap={{ scale: 0.9, backgroundColor: 'var(--ash)' }} // Ändrar bakgrundsfärg till --ash vid klick
-          transition={{ duration: 0.2 }} // Snabb övergång för bakgrundsfärg
+          whileTap={{ scale: 0.9, backgroundColor: 'var(--ash)' }}
+          transition={{ duration: 0.2 }}
         >
           Abort Timer
         </motion.button>
       </div>
     </div>
   );
-}
+};
 
 export default Analog;
+
 

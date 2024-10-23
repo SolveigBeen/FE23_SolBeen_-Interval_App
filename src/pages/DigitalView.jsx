@@ -1,48 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useState, useEffect, } from 'react';
 import Nav from '../components/nav';
-import { TimerContext } from '../services/timer';
-import { Link, useNavigate } from 'react-router-dom';
+import { useTimerValue } from '../services/timer';
 import { motion } from "framer-motion";
+import {  useNavigate } from 'react-router-dom';
 
 const DigitalView = () => {
-  const { abortTimer, displayTime, alarmTriggered } = useContext(TimerContext);
-  const navigate = useNavigate();
-  const [isZoomingOut, setIsZoomingOut] = useState(false); // För zoom/fade-out animation
 
-  useEffect(() => {
-    if (alarmTriggered) {
-      navigate('/Alarm'); // Navigera till AlarmView om tiden är 00:00
-    }
-  }, [alarmTriggered, navigate]); // Kör effekten varje gång displayTime uppdateras
+  const timerValue = useTimerValue(); 
+  const [isZoomingOut, setIsZoomingOut] = useState(false);
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    setIsZoomingOut(true); // Starta zoom-out animationen
-
+    setIsZoomingOut(true);
     setTimeout(() => {
-      navigate("/SetTimer"); // Omdirigering efter animationen
-    }, 300); // 300ms väntetid för animationen
-  };
+      navigate("/SetTimer"); 
+    }, 300);
+};
 
   return (
     <div className="page page-light">
       <Nav />
       <div className="page-header">interval</div>
       <div className="page-content-container">
+        <div className="page-space"></div>
         <motion.div
           className='page-time'
-          initial={{ scale: 1, opacity: 1 }} // Startläge
-          animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}} // Zoom-out och fade-out vid klick
-          transition={{ duration: 0.3 }} // Längd på animationen
+          initial={{ scale: 1, opacity: 1 }}
+          animate={isZoomingOut ? { scale: 1.5, opacity: 0 } : {}}
+          transition={{ duration: 0.3 }}
         >
-          {displayTime}
+          {timerValue}
         </motion.div>
+        <div className="page-space"></div>
       </div>
       <div className='page-footer'>
         <motion.button
           className='page-button button-small'
           onClick={handleClick}
-          whileTap={{ scale: 0.9, backgroundColor: 'var(--ash)' }} // Ändrar bakgrundsfärg vid klick
-          transition={{ duration: 0.2 }} // Snabb övergång för bakgrundsfärg
+          whileTap={{ scale: 0.9, backgroundColor: 'var(--ash)' }}
+          transition={{ duration: 0.2 }}
         >
           Abort Timer
         </motion.button>
@@ -52,3 +48,5 @@ const DigitalView = () => {
 }
 
 export default DigitalView;
+
+

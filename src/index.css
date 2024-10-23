@@ -23,6 +23,7 @@ button {
   padding: 0; /* Ingen padding */
   margin: 0; /* Ingen marginal */
   color: inherit; /* Ärva färg från föräldern */
+  appearance: none;
 }
 
 h1 {

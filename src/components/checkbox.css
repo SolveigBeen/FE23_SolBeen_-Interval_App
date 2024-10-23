@@ -1,0 +1,32 @@
+
+.checkbox-container{
+  padding: 1rem;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.1cap;
+  
+}
+
+.checkBox{
+  width: 20px; 
+  height: 20px; 
+  transform: scale(1.5); 
+  margin-right: 1.2rem;
+  border: 2px solid var(--darkgrey);
+  border-radius: 3px;
+  appearance: none;
+  
+}
+
+.checkBox:checked {
+  background-color: var(--black) ;
+  border-color: var(--black); 
+}
+.checkBox:checked::before {
+  content: 'X'; 
+  display: block;
+  text-align: center;
+  color: white;
+}
+

@@ -1,64 +1,91 @@
-// TimerContext.js
-import React, { createContext, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Timer } from 'easytimer.js';
 
-export const TimerContext = createContext();
 
-export const TimerProvider = ({ children }) => {
-  const [timer] = useState(new Timer());
-  const [displayTime, setDisplayTime] = useState('00:00');
-  const [alarmTriggered, setAlarmTriggered] = useState(false);
+// Skapa en global timer-instans
+const timer = new Timer();
 
-  const formatTime = (minutes, seconds) => {
-    const formattedMinutes = String(minutes).padStart(2, '0'); // Pad med nollor till två siffror
-    const formattedSeconds = String(seconds).padStart(2, '0'); // Pad med nollor till två siffror
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
+const useTimerValue = () => { 
+  const [timerValue, setTimerValue] = useState('00:00'); // Initiera med 0-tid
 
-  const startTimer = (minutes) => {
-
-    if (timer.isRunning()) {
-      timer.stop();
-    }
-
-    // Rensa event listeners
-    timer.removeEventListener('secondsUpdated');
-    timer.removeEventListener('targetAchieved');
-
-    // Återställ alarmTriggered till false vid start av ny timer
-    setAlarmTriggered(false);
-    timer.start({ countdown: true, startValues: { minutes } });
-
-    timer.addEventListener('secondsUpdated', () => {
-      const timeValues = timer.getTimeValues();
-      setDisplayTime(formatTime(timeValues.minutes, timeValues.seconds));
-    });
-
-    timer.addEventListener('targetAchieved', () => {
-      setDisplayTime('00:00');
-      setAlarmTriggered(true);
-    });
-  };
-
-  const abortTimer = () => {
-    timer.stop();
-    setDisplayTime('00:00');
-    setAlarmTriggered(false); 
-  };
-
-    // Funktion för att återställa timern
-    const resetTimer = () => {
-      timer.stop();
-      timer.removeEventListener('secondsUpdated');
-      timer.removeEventListener('targetAchieved');
-      setDisplayTime('00:00');
-      setAlarmTriggered(false); // Återställ flaggan när timern återställs
+  useEffect(() => {
+    const updateTimerValue = () => {
+      setTimerValue(timer.getTimeValues().toString(['minutes', 'seconds'])); 
     };
 
-  return (
-    <TimerContext.Provider value={{ displayTime, startTimer, abortTimer, resetTimer, alarmTriggered }}>
-      {children}
-    </TimerContext.Provider>
-  );
+    timer.addEventListener('secondsUpdated', updateTimerValue);
+
+    return () => {
+      timer.removeEventListener('secondsUpdated', updateTimerValue); // Ta bort event listener vid avmontering
+    };
+  }, []); 
+
+  return timerValue; // Returnera timer-värdet
 };
+
+// Funktioner för att stoppa och pausa timern
+const stopTimer = () => {
+  timer.stop();
+};
+
+const pausTimer = () => {
+  timer.pause();
+};
+
+
+const resumeTimer = () => {
+  const remainingTime = timer.getTotalTimeValues().seconds; // Hämtar kvarvarande tid
+  timer.start({
+    countdown: true,
+    startValues: { seconds: remainingTime } // Återstarta från där den pausades
+  });
+};
+
+let isCheckboxTickedGlobal = false; // Global variabel för checkboxstatus
+
+const startTimer = (startValue, navigate) => {
+  timer.stop(); // Stoppa eventuell tidigare timer
+
+  // Kolla om checkbox är markerad
+  if (isCheckboxTickedGlobal) {
+    // Starta timern med en paus efter 5 sekunder kvar
+    timer.start({
+      countdown: true,
+      startValues: { seconds: startValue * 60 },
+      target: { seconds: startValue * 60 - 30 } // Pausmål vid 30 sekunder mindre än startvärdet
+    });
+  } else {
+    // Starta nedräkningen utan paus
+    timer.start({
+      countdown: true,
+      startValues: { seconds: startValue * 60 }
+    });
+  }
+
+  console.log(`Timer started with value: ${startValue}`);
+
+  // Ta bort tidigare 'targetAchieved' event listener om den finns
+  timer.removeEventListener('targetAchieved');
+
+  // Lägg till ny listener för när timern når noll
+  timer.addEventListener('targetAchieved', () => {
+    if (isCheckboxTickedGlobal) {
+      console.log("Timer reached the Paus target, navigating to Paus.");
+      pausTimer();  // Pausa timern
+      navigate('/Paus');  // Navigera till Paus-sidan
+    } else {
+      console.log("Timer reached the target, navigating to Alarm.");
+      navigate('/Alarm');  // Navigera till Alarm-sidan
+    }
+  });
+};
+
+
+// Funktion för att uppdatera checkboxens status globalt
+const setIsCheckboxTicked = (isChecked) => {
+  isCheckboxTickedGlobal = isChecked;
+};
+
+export { useTimerValue, stopTimer, pausTimer, resumeTimer, startTimer, setIsCheckboxTicked };
+
 
