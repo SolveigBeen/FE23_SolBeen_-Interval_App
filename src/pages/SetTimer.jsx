@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
-import { startTimer } from '../services/timer';
+import { startTimer, setIsCheckboxTicked } from '../services/timer';
 import { useNavigate } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
 
@@ -9,6 +9,7 @@ const SetTimer = () => {
   const [startValue, setStartValue] = useState(10);
   const [rotate, setRotate] = useState(0);
   const [isZoomingOut, setIsZoomingOut] = useState(false);
+   const [intervalChecked, setIntervalChecked] = useState(false); 
   const navigate = useNavigate();
 
 
@@ -24,8 +25,10 @@ const SetTimer = () => {
 
 
 
-  const handleCheckboxInterval = (isChecked) => {
-    setIsCheckboxTicked(isChecked); // Spara checkbox-status
+   // Hantera när första checkboxen ändras
+   const handleCheckboxInterval = (isChecked) => {
+    setIntervalChecked(isChecked); // Uppdatera state
+    setIsCheckboxTicked(isChecked); // Spara checkbox-status globalt om behövs
   };
 
   const handleStartTimer = () => {

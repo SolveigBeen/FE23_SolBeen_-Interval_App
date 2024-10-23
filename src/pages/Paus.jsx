@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importera useNavigate
-import { TimerContext } from '../services/timer';
+import {resumeTimer } from '../services/timer';
 import { motion } from "framer-motion";
 
 const Paus = () => {
-  const { resumeTimer, setIsCheckboxTicked, lastView } = useContext(TimerContext);
+
   const navigate = useNavigate(); // Skapa en instans av navigate
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -15,7 +15,7 @@ const Paus = () => {
     setTimeout(() => {
      
       resumeTimer(); // Återuppta huvudtimern
-      navigate(lastView); // Navigera tillbaka till föregående vy
+      navigate('/Digital'); //
       console.log("No pause clicked, pause intervals stopped.");
     }, 1000); // Tiden för animationen (1 sekund)
   };

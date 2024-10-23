@@ -60,8 +60,8 @@
   font-size: 1.8em;
   letter-spacing:0.2cap;
   text-transform: uppercase;
-margin:2rem;
-padding:2rem;
+  margin:2rem;
+  padding:2rem;
 }
 
 .large-number {
@@ -71,7 +71,7 @@ padding:2rem;
 
 .page-button {
   color: var(--darkgrey);
-  background-color: transparent ;
+  appearance: none;
   text-transform: uppercase;
   display: flex;
   justify-content: center;
@@ -188,7 +188,6 @@ padding:2rem;
 
 .page-Space{
   height: 10rem;
-
   margin: 2rem;
 }
 
