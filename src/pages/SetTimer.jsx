@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { motion } from 'framer-motion';
 import { startTimer, setIsCheckboxTicked } from '../services/timer';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +11,6 @@ const SetTimer = () => {
    const [intervalChecked, setIntervalChecked] = useState(false); 
   const navigate = useNavigate();
 
-
   const increment = () => {
     setStartValue((prevValue) => prevValue + 1);
     setRotate((prevRotate) => prevRotate + 180);
@@ -22,7 +20,6 @@ const SetTimer = () => {
     setStartValue((prevValue) => Math.max(prevValue - 1, 0));
     setRotate((prevRotate) => prevRotate - 180);
   };
-
 
 
    // Hantera när första checkboxen ändras

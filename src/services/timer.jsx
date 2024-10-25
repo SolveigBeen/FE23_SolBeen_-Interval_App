@@ -8,6 +8,7 @@ const timer = new Timer();
 const useTimerValue = () => { 
   const [timerValue, setTimerValue] = useState('00:00'); // Initiera med 0-tid
 
+
   useEffect(() => {
     const updateTimerValue = () => {
       setTimerValue(timer.getTimeValues().toString(['minutes', 'seconds'])); 
@@ -29,26 +30,17 @@ const stopTimer = () => {
 };
 
 const pausTimer = () => {
-  timer.pause();
+timer.pause();
+getTotalTimeValues().seconds; // Sparar kvarvarande tid när paus aktiveras
 };
 
-
-const resumeTimer = () => {
-  const remainingTime = timer.getTotalTimeValues().seconds; // Hämtar kvarvarande tid
-  timer.start({
-    countdown: true,
-    startValues: { seconds: remainingTime } // Återstarta från där den pausades
-  });
-};
 
 let isCheckboxTickedGlobal = false; // Global variabel för checkboxstatus
 
 const startTimer = (startValue, navigate) => {
-  timer.stop(); // Stoppa eventuell tidigare timer
-
   // Kolla om checkbox är markerad
   if (isCheckboxTickedGlobal) {
-    // Starta timern med en paus efter 5 sekunder kvar
+    // Starta timern med en paus efter 30 sekunder kvar
     timer.start({
       countdown: true,
       startValues: { seconds: startValue * 60 },
@@ -86,6 +78,6 @@ const setIsCheckboxTicked = (isChecked) => {
   isCheckboxTickedGlobal = isChecked;
 };
 
-export { useTimerValue, stopTimer, pausTimer, resumeTimer, startTimer, setIsCheckboxTicked };
+export { useTimerValue, stopTimer, pausTimer,  startTimer, setIsCheckboxTicked };
 
 
