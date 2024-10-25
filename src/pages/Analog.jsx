@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Nav from '../components/nav';
-import { useTimerValue } from '../services/timer';
+import { useTimerValue, stopTimer } from '../services/timer';
 import { useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import './analog.css';
@@ -43,6 +43,7 @@ const Analog = () => {
     setIsZoomingOut(true);
 
     setTimeout(() => {
+      stopTimer();
       navigate("/SetTimer");
     }, 300);
   };

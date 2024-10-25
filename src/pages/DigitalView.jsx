@@ -1,6 +1,6 @@
 import React, {  useState, useEffect, } from 'react';
 import Nav from '../components/nav';
-import { useTimerValue } from '../services/timer';
+import { useTimerValue, stopTimer } from '../services/timer';
 import { motion } from "framer-motion";
 import {  useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ const DigitalView = () => {
   const handleClick = () => {
     setIsZoomingOut(true);
     setTimeout(() => {
+      stopTimer();
       navigate("/SetTimer"); 
     }, 300);
 };
